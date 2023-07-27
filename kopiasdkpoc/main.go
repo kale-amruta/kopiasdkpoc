@@ -20,6 +20,10 @@ func main() {
 	if err != nil {
 		fmt.Printf("error while connecting to repository: %v", err)
 	}
+	err = connectToRepositoryUsingConfigFile()
+	if err != nil {
+		fmt.Printf("error while connecting to repository: %v", err)
+	}
 }
 
 func createRepository() (blob.Storage, error) {
@@ -36,6 +40,15 @@ func createRepository() (blob.Storage, error) {
 	}
 
 	return storage, err
+}
+
+func connectToRepositoryUsingConfigFile() error {
+	r, err := repo.Open(context.Background(), "/tmp/repository.config", "test1234", &repo.Options{})
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return r.Close(context.Background())
 }
 
 func connectToRepository(storage blob.Storage) error {
@@ -60,7 +73,7 @@ func getRepositoryStorageUsingS3() (blob.Storage, error) {
 		BucketName:      "tests.kanister.io",
 		Region:          "us-west-2",
 		Endpoint:        "localhost:9000",
-		Prefix:          "kopia-sdk-test",
+		Prefix:          "kopia-sdk-test-2",
 		AccessKeyID:     "AKIAIOSFODNN7EXAMPLE",
 		SecretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
 		DoNotUseTLS:     true,
